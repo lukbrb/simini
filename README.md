@@ -1,7 +1,7 @@
 # Simini
 
-1. [Version française](##français)
-2. [English Version](##english)
+1. [Version française](#français)
+2. [English Version](#english)
 
 
 ## English

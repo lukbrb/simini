@@ -44,7 +44,7 @@ Contributions are welcome! Please submit a pull request or open an issue to repo
 
 ## License
 
-This project is licensed under the [UNLICENCE](LICENSE) license.
+This project is licensed under the [UNLICENCE](./LICENSE.md) license.
 
 ## Français
 
@@ -80,4 +80,4 @@ Les contributions sont les bienvenues ! Veuillez soumettre une pull request ou o
 
 ## Licence
 
-Ce projet est sous licence [UNLICENSE](LICENSE).
+Ce projet est sous licence [UNLICENSE](./LICENSE.md).

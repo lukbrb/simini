@@ -27,13 +27,13 @@ def main(stdscr):
     stdscr.clear()
 
     # Get the list of sections
-    sections = list(config.Parameters.__dataclass_fields__.keys())
+    # sections = list(config.Parameters.__dataclass_fields__.keys())
     current_section_index = 0
     current_option_index = 0
     menu_selected_option = 0
 
     parameters = config.Parameters()
-
+    sections = list(parameters.__dataclass_fields__.keys())
     while True:
         stdscr.clear()
         height, width = stdscr.getmaxyx()
@@ -86,11 +86,11 @@ def main(stdscr):
             field_type = type(getattr(current_section, options[current_option_index]))
             setattr(current_section, options[current_option_index], field_type(new_value))
         elif key == 'c':
-            # Handle configuration action
-            pass
+            parameters.validate()
         elif key == 'g':
-            # Handle generate action
-            pass
+            filename = parameters.physics.problem
+            parameters.write_ini(f'{filename}.ini')
+            stdscr.addstr(len(sections) + 4 + len(options), 2, f"Configuration saved to {filename}.ini")
         elif key in ['KEY_LEFT', 'KEY_RIGHT']:
             option = options[current_option_index]
             value = getattr(current_section, option)

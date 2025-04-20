@@ -9,6 +9,7 @@
 
 from dataclasses import dataclass, field
 from enum import IntEnum, StrEnum
+import configparser
 
 from validators import IntRange, MultipleChoice, FloatRange, Boolean
 # class RiemannSolver(StrEnum):
@@ -115,3 +116,21 @@ class Parameters:
     viscosity: Viscosity = field(default_factory=Viscosity)
     h84: H84 = field(default_factory=H84)
     c91: C91 = field(default_factory=C91)
+
+    def write_ini(self, filename: str):
+        config = configparser.ConfigParser()
+        for section in self.__dataclass_fields__.keys():
+            config.add_section(section)
+            for field in getattr(self, section).__dataclass_fields__.keys():
+                value = getattr(getattr(self, section), field)
+                if isinstance(value, (MultipleChoice, Boolean)):
+                    value = value.selected_value
+                config.set(section, field, str(value))
+        with open(filename, 'w') as configfile:
+            config.write(configfile)
+
+    def validate(self):
+        # ici valider que les valeurs sont dans les bornes
+        # ce qui devrait être assuré par les validateurs
+        # surtout vérifier que des valeurs ne sont pas incohérentes entre-elles
+        pass

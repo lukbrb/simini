@@ -2,30 +2,30 @@ import sys
 from dataclasses import dataclass
 from enum import Enum
 
-class PositiveInt:
-    def __init__(self, value: int):
-        if value <= 0:
-            raise ValueError("Value must be a positive integer.")
-        self.value = value
+# class PositiveInt:
+#     def __init__(self, value: int):
+#         if value <= 0:
+#             raise ValueError("Value must be a positive integer.")
+#         self.value = value
 
-    def __int__(self):
-        return self.value
+#     def __int__(self):
+#         return self.value
 
-    def __repr__(self):
-        return f"PositiveInt({self.value})"
+#     def __repr__(self):
+#         return f"PositiveInt({self.value})"
 
 
-class PositiveFloat:
-    def __init__(self, value: float):
-        if value <= 0.0:
-            raise ValueError("Value must be a positive float.")
-        self.value = value
+# class PositiveFloat:
+#     def __init__(self, value: float):
+#         if value <= 0.0:
+#             raise ValueError("Value must be a positive float.")
+#         self.value = value
 
-    def __float__(self):
-        return self.value
+#     def __float__(self):
+#         return self.value
 
-    def __repr__(self):
-        return f"PositiveFloat({self.value})"
+#     def __repr__(self):
+#         return f"PositiveFloat({self.value})"
 
 
 IntInf= sys.maxsize
@@ -41,7 +41,7 @@ class IntRange(int):
         return instance
 
     def __repr__(self):
-        return f"{int(self)}, from [{self.min_value} ; {self.max_value}]"
+        return f"{int(self)}" #, from [{self.min_value} ; {self.max_value}]"
 
     def __next__(self):
         return self.__class__(self + 1, self.min_value, self.max_value) if (self + 1) <= self.max_value else self.__class__(self, self.min_value, self.max_value)
@@ -60,7 +60,7 @@ class FloatRange(float):
         return instance
 
     def __repr__(self):
-        return f"{float(self):.3f}, from [{self.min_value} ; {self.max_value}]"
+        return f"{float(self):.3f}" #, from [{self.min_value} ; {self.max_value}]"
 
     def __next__(self):
         return self.__class__(self + 0.1, self.min_value, self.max_value) if (self + 0.1) <= self.max_value else self.__class__(self, self.min_value, self.max_value)
@@ -109,7 +109,7 @@ class MultipleChoice:
         return self.__class__(choices= self.choices, default=self.selected_value)
     
     def __repr__(self):
-        return f"{self.selected_value} from [{', '.join(self.choices)}]"
+        return f"{self.selected_value}"# from [{', '.join(self.choices)}]"
     
 class Boolean(MultipleChoice):
     def __init__(self, default):

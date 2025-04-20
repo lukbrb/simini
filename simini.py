@@ -1,10 +1,11 @@
 import curses
-import configparser
+import validators
 
-def read_ini_file(file_path):
-    config = configparser.ConfigParser()
-    config.read(file_path)
-    return config
+try:
+    import config
+except ImportError:
+    print("No config.py file found. Please create one with the necessary configurations.")
+    exit(1)
 
 def display_menu(stdscr, selected_option):
     menu = ['q: Quitter', 'c: Configurer', 'g: Générer']
@@ -15,18 +16,23 @@ def display_menu(stdscr, selected_option):
         x += len(item) + idx + 4
     stdscr.refresh()
 
+def get_options(section):
+    return [field.name for field in section.__dataclass_fields__.values()]
+
+def get_enum_values(enum_type):
+    return list(enum_type)
+
 def main(stdscr):
     # Clear screen
     stdscr.clear()
 
-    # Read the .ini file
-    config = read_ini_file('config.ini')
-
     # Get the list of sections
-    sections = config.sections()
+    sections = list(config.Parameters.__dataclass_fields__.keys())
     current_section_index = 0
     current_option_index = 0
     menu_selected_option = 0
+
+    parameters = config.Parameters()
 
     while True:
         stdscr.clear()
@@ -41,29 +47,27 @@ def main(stdscr):
                 stdscr.addstr(idx + 1, 2, f"{section}")
 
         stdscr.addstr(len(sections) + 2, 0, "Options:")
-        options = config.options(sections[current_section_index])
+        current_section = getattr(parameters, sections[current_section_index])
+        options = get_options(current_section)
         for idx, option in enumerate(options):
+            value = getattr(current_section, option)
             if idx == current_option_index:
-                stdscr.addstr(len(sections) + 3 + idx, 2, f"-> {option}: {config.get(sections[current_section_index], option)}")
+                stdscr.addstr(len(sections) + 3 + idx, 2, f"{option}: {value}", curses.A_REVERSE)
             else:
-                stdscr.addstr(len(sections) + 3 + idx, 2, f"   {option}: {config.get(sections[current_section_index], option)}")
+                stdscr.addstr(len(sections) + 3 + idx, 2, f"{option}: {value}")
 
         # Display the menu at the bottom
-        # stdscr.attron(curses.A_REVERSE)
-        # stdscr.addstr(height - 1, 0, ' ' * (width - 1))
-        # stdscr.attroff(curses.A_REVERSE)
         display_menu(stdscr, menu_selected_option)
 
         stdscr.refresh()
 
         key = stdscr.getkey()
-        filename = config.get("physics", 'problem') + '.ini'
         if key == 'KEY_UP':
             if current_option_index > 0:
                 current_option_index -= 1
             elif current_section_index > 0:
                 current_section_index -= 1
-                current_option_index = len(config.options(sections[current_section_index])) - 1
+                current_option_index = len(get_options(getattr(parameters, sections[current_section_index]))) - 1
         elif key == 'KEY_DOWN':
             if current_option_index < len(options) - 1:
                 current_option_index += 1
@@ -76,18 +80,29 @@ def main(stdscr):
             # Edit the selected option
             stdscr.addstr(len(sections) + 3 + current_option_index, 2, "Enter new value: ")
             curses.echo()
-            new_value = stdscr.getstr(len(sections) + 3 + current_option_index, 18)
+            new_value = stdscr.getstr(len(sections) + 3 + current_option_index, 18).decode('utf-8')
             curses.noecho()
-            config.set(sections[current_section_index], options[current_option_index], new_value.decode('utf-8'))
+            # Convert new_value to the appropriate type
+            field_type = type(getattr(current_section, options[current_option_index]))
+            setattr(current_section, options[current_option_index], field_type(new_value))
         elif key == 'c':
             # Handle configuration action
             pass
         elif key == 'g':
-            with open(filename, 'w') as configfile:
-                config.write(configfile)
             # Handle generate action
-                pass
+            pass
+        elif key in ['KEY_LEFT', 'KEY_RIGHT']:
+            option = options[current_option_index]
+            value = getattr(current_section, option)
+            field_type = type(value)
+            if isinstance(value, str): continue # on ne doit pas pouvoir changer la valeur d'une chaîne de caractères avec les flèches
+            if key == 'KEY_LEFT':
+                new_value = value.prev()
+            elif key == 'KEY_RIGHT':
+                new_value = next(value)
+            else:
+                continue
 
-    # Save the changes to the .ini file
+            setattr(current_section, option, new_value)
 
 curses.wrapper(main)

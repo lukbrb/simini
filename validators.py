@@ -31,6 +31,8 @@ from enum import Enum
 IntInf= sys.maxsize
 FloatInf = sys.float_info.max
 
+
+# Toutes ces classes pourraient être unifiées en une classe Curseur, au fond seul le type et l'intervalle de définitions changent.
 class IntRange(int):
     def __new__(cls, value: int, min_value: int= -IntInf, max_value: int=IntInf):
         if not (min_value <= value <= max_value):
@@ -39,7 +41,7 @@ class IntRange(int):
         instance.min_value = min_value
         instance.max_value = max_value
         return instance
-
+        
     def __repr__(self):
         return f"{int(self)}" #, from [{self.min_value} ; {self.max_value}]"
 
@@ -58,7 +60,7 @@ class FloatRange(float):
         instance.min_value = min_value
         instance.max_value = max_value
         return instance
-
+    
     def __repr__(self):
         return f"{float(self):.3f}" #, from [{self.min_value} ; {self.max_value}]"
 
@@ -128,3 +130,35 @@ class Boolean(MultipleChoice):
         return self.__class__(default=self.selected_value)
     def __repr__(self):
         return "ON" if self.selected_value else "OFF"
+
+
+def from_string(new_value: str, prev_value: IntRange | FloatRange | MultipleChoice | Boolean, type_: type):
+    value = new_value.strip()
+    if type_ == IntRange:
+        try:
+            value = int(value)
+            return IntRange(value, prev_value.min_value, prev_value.max_value)
+        except ValueError:
+            raise ValueError(f"Value '{value}' is not a valid integer.")
+    elif type_ == FloatRange:
+        try:
+            return FloatRange(float(value), prev_value.min_value, prev_value.max_value)
+        except ValueError:
+            raise ValueError(f"Value '{value}' is not a valid float.")
+    elif type_ == MultipleChoice:
+        if value not in prev_value.choices:
+            raise ValueError(f"Value '{value}' is not a valid choice.")
+        return MultipleChoice(prev_value.choices, value)
+    elif type_ == Boolean:
+        if value not in [True, False, "ON", "OFF"]:
+            raise ValueError(f"Value '{value}' is not a valid boolean.")
+        if value == "ON":
+            return Boolean(True)
+        elif value == "OFF":
+            return Boolean(False)
+        else:
+            return Boolean(value)
+    elif type_ == str:
+        return str(value)
+    else:
+        raise TypeError(f"Unsupported type: {type_}")

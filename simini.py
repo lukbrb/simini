@@ -16,6 +16,7 @@ class SimIniEditor:
         self.menu_selected_option = 0
         self.focus_right = False  # True if the focus is on the right panel, False otherwise
         self.menu_size = 4
+        curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
 
     def display_menu(self):
         menu = ['q: Quitter', 'c: Configurer', 'g: Générer', 'h: Aide']
@@ -23,6 +24,8 @@ class SimIniEditor:
             menu.append('Tab/Enter : Panel droit')
         else:
             menu.append('Shift+Tab/Echap : Panel gauche')
+            menu.append('Flèches G et D: Changer la valeur')
+            menu.append("Enter: Editer la valeur")
         height, width = self.stdscr.getmaxyx()
         for xi in range(width):
             self.stdscr.addch(height-self.menu_size, xi, curses.ACS_HLINE)
@@ -127,8 +130,17 @@ class SimIniEditor:
                     new_value = self.stdscr.getstr(self.current_option_index + 1, mid + 20).decode('utf-8')
                     curses.noecho()
                     # Convert new_value to the appropriate type
-                    field_type = type(getattr(current_section, options[self.current_option_index]))
-                    setattr(current_section, options[self.current_option_index], field_type(new_value))
+                    current_value = getattr(current_section, options[self.current_option_index])
+                    field_type = type(current_value)
+                    try:
+                        new_value = validators.from_string(new_value=new_value, prev_value=current_value, type_=field_type)
+                    except ValueError as e:
+                        self.stdscr.addstr(self.current_option_index + 1, mid + 4, f"Invalid value for {options[self.current_option_index]}, {e}.", curses.color_pair(1))
+                        self.stdscr.refresh()
+                        self.stdscr.getkey()
+                        self.stdscr.addstr(self.current_option_index + 1, mid + 4, " " * (width - mid - 4))
+                        new_value = getattr(current_section, options[self.current_option_index])
+                    setattr(current_section, options[self.current_option_index], new_value)
                 else:
                     self.focus_right = True
                     self.reset_cursor()

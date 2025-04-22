@@ -24,7 +24,7 @@ Simini is a project aimed at providing a `curses`-based user interface to config
 Clone this repository and navigate to the directory:
 
 ```bash
-git clone https://github.com/your-username/simini.git
+git clone https://github.com/lukbrb/simini.git
 cd simini
 ```
 
@@ -61,7 +61,7 @@ Simini est un projet visant à fournir une interface utilisateur basée sur `cur
 Clonez ce dépôt et accédez au dossier :
 
 ```bash
-git clone https://github.com/your-username/simini.git
+git clone https://github.com/lukbrb/simini.git
 cd simini
 ```
 

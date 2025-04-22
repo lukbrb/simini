@@ -27,9 +27,9 @@ from validators import IntRange, MultipleChoice, FloatRange, Boolean
 
 @dataclass
 class Mesh:
-    Nx: IntRange = IntRange(512, min_value=1)
-    Ny: IntRange = IntRange(512, min_value=1)
-    Nz: IntRange = IntRange(0, min_value=1)
+    Nx: IntRange = IntRange(512, min_value=0)
+    Ny: IntRange = IntRange(512, min_value=0)
+    Nz: IntRange = IntRange(0, min_value=0)
     Ng: IntRange = IntRange(2, min_value=0)  # Nghosts
 
 

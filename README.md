@@ -6,7 +6,7 @@
 
 ## English
 
-Simini is a project aimed at providing a `curses`-based user interface to configure simulation parameters, similar to the `ccmake` tool.
+Simini is a project aimed at providing a `curses`-based user interface to configure simulation parameters.
 
 ## Features
 
@@ -17,7 +17,7 @@ Simini is a project aimed at providing a `curses`-based user interface to config
 ## Prerequisites
 
 - Python 3.x
-- `curses` library (usually included with Python on Unix systems).
+- `curses` library (included with Python on Unix systems).
 
 ## Installation
 
@@ -30,13 +30,14 @@ cd simini
 
 ## Usage
 
+Create a `config.py` file in the same directory, setting up the parameters your simulations need, and their ranges of validity. The `config.py` file for `fv2d` is given as an example.
 Launch the interface with the following command:
 
 ```bash
-python simini.py config.ini
+python simini.py
 ```
 
-Navigate through the interface to configure your simulation parameters, as defined in the `config.ini` file.
+Navigate through the interface to configure your simulation parameters for a given problem. Once ready, you can generate the `.ini` file by typing `g`. Exit the program with `q`. 
 
 ## Contribution
 
@@ -48,16 +49,16 @@ This project is licensed under the [UNLICENCE](./LICENSE.md) license.
 
 ## Français
 
-Simini est un projet visant à fournir une interface utilisateur basée sur `curses` pour configurer les paramètres de simulation, similaire à l'outil `ccmake`.
+Simini est un projet visant à fournir une interface utilisateur basée sur `curses` pour configurer les paramètres de simulation.
 
 ## Prérequis
 
 - Python 3.x
-- Bibliothèque `curses` (généralement incluse avec Python sur les systèmes Unix).
+- Bibliothèque `curses` (incluse avec Python sur les systèmes Unix).
 
 ## Installation
 
-Clonez ce dépôt et accédez au répertoire :
+Clonez ce dépôt et accédez au dossier :
 
 ```bash
 git clone https://github.com/your-username/simini.git
@@ -66,13 +67,15 @@ cd simini
 
 ## Utilisation
 
+Il est nécessaire de créer un fichier `config.py` dans le même dossier, où sont spécifiés les paramètres disponibles de votre simulation. Leur intervalle de validité peut également être spécifié.
+Ce répertoire contient le fichier `config.py` de `fv2d` à titre d'exemple.
 Lancez l'interface avec la commande suivante :
 
 ```bash
-python simini.py config.ini
+python simini.py
 ```
 
-Naviguez dans l'interface pour configurer vos paramètres de simulation tels que définis par le fichier de configuration `config.ini`
+Naviguez dans l'interface pour configurer vos paramètres de simulation pour un problème donné. Une fois prêt, tapez `g` pour générer le fichier `.ini` spécifique à votre problème. Quittez le programme en tapant `q`.
 
 ## Contribution
 

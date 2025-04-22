@@ -8,7 +8,7 @@
 # Lucas Barbier-Goy, 18-04-2025
 
 from dataclasses import dataclass, field
-from enum import IntEnum, StrEnum
+# from enum import IntEnum, StrEnum
 import configparser
 
 from validators import IntRange, MultipleChoice, FloatRange, Boolean
@@ -27,18 +27,18 @@ from validators import IntRange, MultipleChoice, FloatRange, Boolean
 
 @dataclass
 class Mesh:
-    Nx: IntRange = IntRange(512)
-    Ny: IntRange = IntRange(512)
-    Nz: IntRange = IntRange(0)
-    Ng: IntRange = IntRange(2)  # Nghosts
+    Nx: IntRange = IntRange(512, min_value=1)
+    Ny: IntRange = IntRange(512, min_value=1)
+    Nz: IntRange = IntRange(0, min_value=1)
+    Ng: IntRange = IntRange(2, min_value=0)  # Nghosts
 
 
 @dataclass
 class Run:
-    tend: FloatRange = FloatRange(1.0)
+    tend: FloatRange = FloatRange(1.0, min_value=0.001)
     multiple_outputs: Boolean = Boolean(False)
     # restart_file: bool
-    save_freq: FloatRange = FloatRange(1e-1)
+    save_freq: FloatRange = FloatRange(1e-1, min_value=0.001)
     output_filename: str = "run"
     boundary_x: MultipleChoice = MultipleChoice(["reflecting", "absorbing", "periodic"], default="reflecting")
     boundary_y: MultipleChoice = MultipleChoice(["reflecting", "absorbing", "periodic"], default="reflecting")
@@ -57,7 +57,7 @@ class Solvers:
 class Misc:
     epsilon: FloatRange = FloatRange(1e-10, min_value=-1e-16, max_value=1e-5)
     seed: IntRange = IntRange(12345)
-    log_frequency: IntRange = IntRange(10)
+    log_frequency: IntRange = IntRange(10, min_value=1)
 
 
 @dataclass
@@ -67,7 +67,6 @@ class Physics:
     g: FloatRange = FloatRange(0.0)
     cr: FloatRange = FloatRange(0.1)
     problem: MultipleChoice = MultipleChoice(["sod", "blastwave", "shocktube"], default="sod")
-    # ici faire un choix plus poussé basé sur un dossier de fichiers tests.ini
 
 
 @dataclass

@@ -54,7 +54,6 @@ class SimIniEditor:
             height, width = self.stdscr.getmaxyx()
             mid = width // 2
 
-            # Draw the vertical line
             self.draw_vertical_line(height-self.menu_size, mid)
 
             # Display the sections on the left
@@ -101,8 +100,10 @@ class SimIniEditor:
             elif key == 'q':
                 break
             elif key == 'c':
+                # Not implemented yet
                 self.parameters.validate()
             elif key == 'g':
+                # TODO: La génération du fichier ini fonctionne mais rien ne s'affiche à l'écran
                 filename = self.parameters.physics.problem
                 self.parameters.write_ini(f'{filename}.ini')
                 self.stdscr.clear()
@@ -122,14 +123,14 @@ class SimIniEditor:
                         continue
 
                     setattr(current_section, option, new_value)
-            elif key in ['\t', '\n']:  # Tab or Enter key
-                # Edit the selected option
+            elif key in ['\t', '\n']:
+                # If focus on the right panel, Edit the selected option
                 if key=='\n' and self.focus_right:
                     self.stdscr.addstr(self.current_option_index + 1, mid + 4, "Enter new value:", curses.A_UNDERLINE)
                     curses.echo()
                     new_value = self.stdscr.getstr(self.current_option_index + 1, mid + 20).decode('utf-8')
                     curses.noecho()
-                    # Convert new_value to the appropriate type
+
                     current_value = getattr(current_section, options[self.current_option_index])
                     field_type = type(current_value)
                     try:
@@ -139,12 +140,12 @@ class SimIniEditor:
                         self.stdscr.refresh()
                         self.stdscr.getkey()
                         self.stdscr.addstr(self.current_option_index + 1, mid + 4, " " * (width - mid - 4))
-                        new_value = getattr(current_section, options[self.current_option_index])
+                        new_value = current_value
                     setattr(current_section, options[self.current_option_index], new_value)
                 else:
                     self.focus_right = True
                     self.reset_cursor()
-            elif key in ['KEY_BTAB', '\x1b']:  # Shift + Tab or Escape key
+            elif key in ['KEY_BTAB', '\x1b']:  # Shift + Tab or Escape key. Note, escape key takes a bit longer to process
                 self.focus_right = False
                 self.reset_cursor()
 
